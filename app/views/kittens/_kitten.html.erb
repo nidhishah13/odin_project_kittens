@@ -1,0 +1,5 @@
+<li>
+  <h3><%= link_to kitten.name, kitten %></h3>
+  <%= link_to "delete", kitten, method: :delete,
+                                  data: { confirm: "You sure?" } %>
+</li>

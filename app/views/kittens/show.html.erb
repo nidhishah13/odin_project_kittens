@@ -1,0 +1,16 @@
+<% provide(:title, @kitten.name) %>
+<div class="row">
+  <aside class="col-md-4">
+    <section class="user_info">
+      <h1>
+        <%= @kitten.name %>
+      </h1>
+      Age: <%= pluralize(@kitten.age, 'year') %><br>
+      Cuteness: <%= @kitten.cuteness %><br>
+      Softness: <%= @kitten.softness %><br>
+      <%= link_to "Edit Kitten", edit_kitten_path %><br>
+      <%= link_to "delete", @kitten, method: :delete,
+                                  data: { confirm: "You sure?" } %>
+    </section>
+  </aside>
+</div>

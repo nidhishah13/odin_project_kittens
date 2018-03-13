@@ -1,0 +1,17 @@
+<%= form_for(@kitten) do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>
+  
+  <%= f.label :name %>
+  <%= f.text_field :name, class: 'form-control' %>
+
+  <%= f.label :age %>
+  <%= f.number_field :age, min: '1', class: 'form-control' %>
+
+  <%= f.label :cuteness %>
+  <%= f.number_field :cuteness, class: 'form-control' %>
+
+  <%= f.label :softness %>
+  <%= f.number_field :softness, class: 'form-control' %>
+
+  <%= f.submit yield(:button_text), class: "btn btn-primary" %>
+<% end %>

@@ -1,0 +1,8 @@
+<% provide(:title, 'All kittens') %>
+<h1>All kittens</h1>
+
+<ul class="users" style= "list-style-type: none;">
+  <% @kittens.each do |kitten| %>
+    <%= render @kittens%>
+  <% end %>
+</ul>
