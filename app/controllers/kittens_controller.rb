@@ -1,11 +1,12 @@
 class KittensController < ApplicationController
+  before_action :authenticate_request!, only: [:create, :update, :destroy]
+  before_action :correct_user,   only: :update
 
   def index
     @kittens = Kitten.all
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @kittens }
       format.json { render :json => @kittens }
     end
   end
@@ -24,7 +25,7 @@ class KittensController < ApplicationController
   end
 
   def create
-    @kitten = Kitten.new(kitten_params)
+    @kitten = @current_user.kittens.build(kitten_params)
     if @kitten.save
 			flash.now[:success] = "Kitten created!"
 			redirect_to @kitten 
@@ -51,14 +52,23 @@ class KittensController < ApplicationController
 
   def destroy 
     Kitten.find(params[:id]).destroy
-    flash.now[:success] = "Kitten deleted"
-		redirect_to root_url
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render :json => "Kitten deleted" }
+    end
   end
 
   private
 
     def kitten_params
       params.require(:kitten).permit(:name, :age, :cuteness, :softness)
+    end
+
+    def correct_user
+      @kitten = @current_user.kittens.find_by(id: params[:id])
+      if @kitten.nil?
+        render json: "cannot update" 
+      end
     end
 
 end
