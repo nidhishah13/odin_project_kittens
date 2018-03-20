@@ -77,10 +77,14 @@ class KittensController < ApplicationController
     end
 
     def correct_user
-      @kitten = @current_user.kittens.find_by(id: params[:id])
-      if @kitten.nil?
-        render json: {status: "This is not your kitten"}, status: :bad_request 
-      end
+      if Kitten.find(params[:id])
+        @kitten = @current_user.kittens.find_by(id: params[:id])
+        if @kitten.nil?
+          render json: {status: "This is not your kitten"}, status: :bad_request 
+        end
+      else
+        render json: {error: "Kitten not found"}, status: :not_found
+      end 
     end
 
 end

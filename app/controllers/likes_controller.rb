@@ -20,7 +20,7 @@ class LikesController < ApplicationController
         like.destroy
         render json: {status: "Unliked the kitten" }
       else
-        render json: {status: "You have to like the ktten first" }, status: :bad_request
+        render json: {status: "You have to like the kitten first" }, status: :bad_request
       end
     else
       render json: {errors: "Kitten not found"}
