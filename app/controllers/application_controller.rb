@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   require 'jsonwebtoken'
   #protect_from_forgery with: :exception
   rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
+  rescue_from ActiveRecord::RecordNotUnique, :with => :record_not_unique
 
   protected
   
@@ -38,6 +39,10 @@ class ApplicationController < ActionController::Base
 
     def record_not_found(error)
       render :json => {:error => 'Kitten not found'}, :status => :not_found
+    end
+
+    def record_not_unique(error)
+      render :json => {:error => 'Record already exists'}, :status => :accepted
     end
 
 end

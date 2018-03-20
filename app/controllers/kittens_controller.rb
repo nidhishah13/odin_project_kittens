@@ -1,7 +1,6 @@
 class KittensController < ApplicationController
   before_action :authenticate_request!, only: [:create, :update, :show, :destroy]
   before_action :correct_user,   only: [:update, :destroy]
-  #after_action :updater, only: [:create]
 
   def index
     @kittens = Kitten.all
@@ -59,7 +58,6 @@ class KittensController < ApplicationController
       end
       # Handle a successful update.
     else
-      #render json: { error: "cannot update" }
       render json: { errors: @kitten.errors.full_messages }, status: :bad_request
     end
   end
@@ -81,7 +79,7 @@ class KittensController < ApplicationController
     def correct_user
       @kitten = @current_user.kittens.find_by(id: params[:id])
       if @kitten.nil?
-        render json: "This is not your kitten" 
+        render json: {status: "This is not your kitten"}, status: :bad_request 
       end
     end
 
