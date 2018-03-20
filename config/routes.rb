@@ -7,4 +7,5 @@ Rails.application.routes.draw do
       post 'login'
     end
   end
+  resources :likes, only: [:create, :destroy]
 end

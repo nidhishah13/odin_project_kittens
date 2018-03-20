@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   require 'jsonwebtoken'
   #protect_from_forgery with: :exception
+  rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
 
   protected
   
@@ -33,6 +34,10 @@ class ApplicationController < ActionController::Base
     # Sets the @current_user with the user_id from payload
     def load_current_user!
       @current_user = User.find_by(id: payload[0]['user_id'])
+    end
+
+    def record_not_found(error)
+      render :json => {:error => 'Kitten not found'}, :status => :not_found
     end
 
 end

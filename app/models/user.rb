@@ -1,6 +1,12 @@
 class User < ApplicationRecord
 
-  has_many :kittens, dependent: :destroy
+  def as_json(options={})
+    super(only: [:id, :name])
+  end
+
+  has_many :kittens, class_name: "Kitten", dependent: :destroy
+  has_many :likes, class_name: "Like", foreign_key: "liker_id"
+  has_many :liked_kittens, through: :likes, source: :liked, dependent: :destroy
 
   before_save { email.downcase! }
 
