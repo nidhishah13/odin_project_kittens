@@ -1,9 +1,9 @@
 class KittensController < ApplicationController
-  before_action :authenticate_request!, only: [:create, :update, :show, :destroy]
+  before_action :authenticate_user, only: [:create, :update, :show, :destroy]
   before_action :correct_user,   only: [:update, :destroy]
 
   def index
-    @kittens = Kitten.all    
+    kittens = Kitten.all      
     render :json => @kittens.as_json( :except => [:created_at, :updated_at], 
                             :methods => [:likes_count] ) 
   end

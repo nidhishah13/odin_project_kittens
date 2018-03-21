@@ -1,5 +1,5 @@
 class LikesController < ApplicationController
-  before_action :authenticate_request!, only: [:create, :destroy]
+  before_action :authenticate_user, only: [:create, :destroy]
 
   def create
     begin
