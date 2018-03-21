@@ -1,6 +1,5 @@
-class ApplicationController < ActionController::Base
+class ApplicationController < ActionController::API
   require 'jsonwebtoken'
-  #protect_from_forgery with: :exception
   rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
   rescue_from ActiveRecord::RecordNotUnique, :with => :record_not_unique
 
@@ -18,7 +17,7 @@ class ApplicationController < ActionController::Base
 
     # Returns 401 response. To handle malformed / invalid requests.
     def invalid_authentication
-      render json: {error: 'Invalid Request'}, status: :unauthorized
+      render json: {error: 'Authentication failed'}, status: :unauthorized
     end
 
   private

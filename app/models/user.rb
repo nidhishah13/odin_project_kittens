@@ -1,7 +1,11 @@
 class User < ApplicationRecord
 
   def as_json(options={})
-    super(only: [:id, :name])
+    if options.key?(:only) or options.key?(:methods) or options.key?(:include) or options.key?(:except)
+      h = super(options)
+    else
+      h = super(only: [:id, :name])
+    end
   end
 
   has_many :kittens, class_name: "Kitten", dependent: :destroy

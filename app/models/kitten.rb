@@ -2,10 +2,15 @@ class Kitten < ApplicationRecord
 
   def as_json(options={})
     if options.key?(:only) or options.key?(:methods) or options.key?(:include) or options.key?(:except)
+      current_user = options[:current_user]
+      options.delete(:current_user)
       h = super(options)
+      h[:my_kitten] = my_kitten(current_user.id) if current_user.present?
+      h[:liked_by_me] = liked_by_me(current_user.id) if current_user.present?
+      h
     else
       h = super(only: [:name, :age, :cuteness, :softness, :user_id], 
-                methods: [:likes_count, :my_kitten] )
+                methods: [:likes_count, :my_kitten, :liked_by_me] )
     end  
   end
 
@@ -13,8 +18,18 @@ class Kitten < ApplicationRecord
       self.likes.count
   end
 
-  def my_kitten
-    if @current_user == self.user 
+  def my_kitten(current_user_id)
+    # binding.pry
+    if current_user_id == self.user.id 
+      return true
+    else
+      return false
+    end
+  end
+
+  def liked_by_me(current_user_id)
+    # binding.pry
+    if self.likes.find_by(liker_id: current_user_id)
       return true
     else
       return false

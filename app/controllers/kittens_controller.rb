@@ -3,23 +3,16 @@ class KittensController < ApplicationController
   before_action :correct_user,   only: [:update, :destroy]
 
   def index
-    @kittens = Kitten.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render :json => @kittens.as_json( :except => [:created_at, :updated_at], 
-                            :methods => [:likes_count, :my_kitten] ) }
-    end
+    @kittens = Kitten.all    
+    render :json => @kittens.as_json( :except => [:created_at, :updated_at], 
+                            :methods => [:likes_count] ) 
   end
 
   def show
     @kitten = Kitten.find(params[:id]) #if id not found then application controller record_not_found
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render :json => @kitten.as_json( :except => [:created_at, :updated_at],
-                      :methods => [:likes_count, :my_kitten, :liked_by_user] ) }
-    end
+    render :json => @kitten.as_json( :except => [:created_at, :updated_at],
+                      :methods => [:likes_count, :liked_by_user], current_user: @current_user )
   end
 
   def new 
@@ -29,16 +22,10 @@ class KittensController < ApplicationController
   def create
     @kitten = @current_user.kittens.build(kitten_params)
     if @kitten.save
-			# flash.now[:success] = "Kitten created!"
-      # redirect_to @kitten 
       render :json => @kitten.as_json( :except => [:created_at, :updated_at] ) 
     else
-      respond_to do |format|
-        format.html { 
-          flash.now[:danger] = "Kitten not created"
-          render 'new' }
-        format.json { render :json => @kitten.errors.full_messages }
-      end
+      
+      render json: {errors: @kitten.errors.full_messages }
       #render json: { errors: @kitten.errors.full_messages }, status: :bad_request
 		end
   end
@@ -50,12 +37,8 @@ class KittensController < ApplicationController
   def update
     @kitten = Kitten.find(params[:id])
     if @kitten.update_attributes(kitten_params)
-      # flash.now[:success] = "Kitten details updated"
-      # redirect_to @kitten
-      respond_to do |format|
-        format.html {render text: "Kitten details updated" }
-        format.json { render :json => @kitten.as_json( :except => [:created_at, :updated_at] ) }
-      end
+     
+      render :json => @kitten.as_json( :except => [:created_at, :updated_at] )
       # Handle a successful update.
     else
       render json: { errors: @kitten.errors.full_messages }, status: :bad_request
@@ -64,9 +47,16 @@ class KittensController < ApplicationController
 
   def destroy 
     Kitten.find(params[:id]).destroy
-    respond_to do |format|
-      format.html {render text: "Kitten deleted" }
-      format.json { render :json => "Kitten deleted" }
+    render json: {status: "Kitten deleted"}, status: :ok
+  end
+
+  def likers 
+    @kitten = Kitten.find(params[:id])
+    if @kitten.likes.any?
+      render :json => @kitten.likers.as_json(only: [:name])
+      #render :json => @kitten.as_json( only: :[], methods: :liked_by_user)
+    else
+      render :json => {error: "No likes"}
     end
   end
 

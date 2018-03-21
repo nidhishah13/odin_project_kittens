@@ -1,7 +1,14 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root 'kittens#index'
-  resources :kittens
+
+  resources :kittens do 
+    member do 
+      get "likers"
+      #match "likers" => "kittens#likers", :via => :get
+    end
+  end
+
   resources :users, only: :create do
     collection do
       post 'login'
